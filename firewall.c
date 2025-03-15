@@ -7,7 +7,7 @@
 
 MODULE_DESCRIPTION("Firewall");
 MODULE_AUTHOR("Kaylem20201");
-MODULE_LICENSE("MIT");
+MODULE_LICENSE("GPL");
 
 static int firewall_init(void)
 {
