@@ -18,4 +18,12 @@ Install For Proxmox Containers
   ```
 - `make` in the firewall directory, then `insmod firewall.ko` as normal
 
+References
+===
+
+https://linux-kernel-labs.github.io/refs/heads/master/labs/kernel_modules.html
+
+https://netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-4.html
+
+https://www.kernel.org/doc/html/latest/index.html
 
