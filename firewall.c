@@ -11,13 +11,13 @@ MODULE_LICENSE("GPL");
 
 static int firewall_init(void)
 {
-        pr_debug("Firewall module initiated\n");
+        printk("Firewall module initiated\n");
         return 0;
 }
 
 static void firewall_exit(void)
 {
-        pr_debug("Firewall module terminated\n");
+        printk("Firewall module terminated\n");
 }
 
 module_init(firewall_init);
