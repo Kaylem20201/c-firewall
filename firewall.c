@@ -1,24 +1,35 @@
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/module.h>
+// firewall.c
+// Main process
 
-//firewall.c
-//Linux module
+#include <stdio.h>
+#include <unistd.h>
 
-MODULE_DESCRIPTION("Firewall");
-MODULE_AUTHOR("Kaylem20201");
-MODULE_LICENSE("GPL");
+void print_help() {
+  int long_flag_width = 32;
+  int commands_width = 64;
 
-static int firewall_init(void)
-{
-        printk("Firewall module initiated\n");
-        return 0;
+  printf("Usage: firewall [OPTION]\n");
+  printf("Configure the custom firewall.\n");
+  printf("Commands: \n");
+  printf("  -l, %*s%*s\n", long_flag_width, "--logs", commands_width,
+         "Print firewall logs to stdout");
+  printf("  -e, %*s%*s\n", long_flag_width, "--enable", commands_width,
+         "Enable firewall");
+  printf("  -d, %*s%*s\n", long_flag_width, "--disable", commands_width,
+         "Disable firewall");
+  printf("  -v, %*s%*s\n", long_flag_width, "--version", commands_width,
+         "Display version information");
 }
 
-static void firewall_exit(void)
-{
-        printk("Firewall module terminated\n");
-}
+int main(int argc, char **argv) {
 
-module_init(firewall_init);
-module_exit(firewall_exit);
+  int opt;
+  while ((opt = getopt(argc, argv, "ledv:") != -1)) {
+    switch (opt) {
+    default:
+      print_help();
+    }
+  }
+
+  return 0;
+}

@@ -1,7 +1,7 @@
 KDIR = /lib/modules/`uname -r`/build
 
 kbuild:
-	make -C $(KDIR) M=`pwd`
+	gcc -o firewall firewall.c
 
 clean:
-	make -C $(KDIR) M=`pwd` clean
+	rm -f firewall
