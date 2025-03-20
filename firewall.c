@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define RULES_FILEPATH "/etc/iptables/custom_firewall.rules"
 
 void print_help() {
   int long_flag_width = 32;
@@ -19,6 +23,22 @@ void print_help() {
          "Disable firewall");
   printf("  -v, %*s%*s\n", long_flag_width, "--version", commands_width,
          "Display version information");
+}
+
+void enable_firewall() {
+  char command[] = "iptables-restore ";
+  strcat(command, RULES_FILEPATH);
+  int res = system(command);
+  switch (res) {
+    case -1:
+      printf("Error -1: Child process error");
+    case 127:
+      printf("Error 127: Could not execute shell in child process");
+    case 0:
+      return;
+    default:
+      printf("Returned %d", res);
+  }
 }
 
 int main(int argc, char **argv) {
