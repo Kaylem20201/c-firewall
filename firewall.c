@@ -6,6 +6,9 @@
 #include <string.h>
 #include <unistd.h>
 
+#define PROGRAM_NAME "Custom Firewall"
+#define VERSION "0.1.0"
+
 // TODO: work with env variables instead
 #define RULES_FILEPATH "/etc/custom_firewall/current.rules"
 #define DISABLED_RULES_FILEPATH "/etc/custom_firewall/accept-all.rules"
@@ -27,7 +30,7 @@ void print_help() {
          "Display version information");
 }
 
-void load_firewall_rules(char* filepath) {
+void load_firewall_rules(char *filepath) {
   char command[64] = "iptables-restore ";
   strcat(command, filepath);
   int res = system(command);
@@ -46,12 +49,16 @@ void load_firewall_rules(char* filepath) {
   exit(res);
 }
 
-void enable_firewall() {
-  load_firewall_rules(RULES_FILEPATH);
-}
+void enable_firewall() { load_firewall_rules(RULES_FILEPATH); }
 
-void disable_firewall() {
-  load_firewall_rules(DISABLED_RULES_FILEPATH);
+void disable_firewall() { load_firewall_rules(DISABLED_RULES_FILEPATH); }
+
+void print_version() {
+  char version_str[128];
+  strcpy(version_str, PROGRAM_NAME);
+  strcat(version_str, " ");
+  strcat(version_str, VERSION);
+  printf("%s\n", version_str);
 }
 
 int main(int argc, char **argv) {
@@ -70,6 +77,7 @@ int main(int argc, char **argv) {
       disable_firewall();
       break;
     case 'v':
+      print_version();
       break;
     case '?':
     default:
