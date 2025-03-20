@@ -2,11 +2,12 @@
 // Main process
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-#define RULES_FILEPATH "/etc/iptables/custom_firewall.rules"
+//TODO: work with env variables instead
+#define RULES_FILEPATH "/etc/custom_firewall/current.rules"
 
 void print_help() {
   int long_flag_width = 32;
@@ -30,14 +31,14 @@ void enable_firewall() {
   strcat(command, RULES_FILEPATH);
   int res = system(command);
   switch (res) {
-    case -1:
-      printf("Error -1: Child process error");
-    case 127:
-      printf("Error 127: Could not execute shell in child process");
-    case 0:
-      return;
-    default:
-      printf("Returned %d", res);
+  case -1:
+    printf("Error -1: Child process error");
+  case 127:
+    printf("Error 127: Could not execute shell in child process");
+  case 0:
+    return;
+  default:
+    printf("Returned %d", res);
   }
 }
 
@@ -46,6 +47,9 @@ int main(int argc, char **argv) {
   int opt;
   while ((opt = getopt(argc, argv, "ledv:") != -1)) {
     switch (opt) {
+    case 'l':
+      enable_firewall();
+      return 0;
     default:
       print_help();
     }
