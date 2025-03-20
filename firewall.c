@@ -6,12 +6,12 @@
 #include <string.h>
 #include <unistd.h>
 
-//TODO: work with env variables instead
+// TODO: work with env variables instead
 #define RULES_FILEPATH "/etc/custom_firewall/current.rules"
 
 void print_help() {
-  int long_flag_width = 32;
-  int commands_width = 64;
+  int long_flag_width = 16;
+  int commands_width = 32;
 
   printf("Usage: firewall [OPTION]\n");
   printf("Configure the custom firewall.\n");
@@ -27,29 +27,36 @@ void print_help() {
 }
 
 void enable_firewall() {
-  char command[] = "iptables-restore ";
+  char command[64] = "iptables-restore ";
   strcat(command, RULES_FILEPATH);
   int res = system(command);
   switch (res) {
   case -1:
-    printf("Error -1: Child process error");
+    printf("Error -1: Child process error\n");
   case 127:
-    printf("Error 127: Could not execute shell in child process");
+    printf("Error 127: Could not execute shell in child process\n");
   case 0:
     return;
   default:
-    printf("Returned %d", res);
+    printf("Returned %d\n", res);
   }
 }
 
 int main(int argc, char **argv) {
 
   int opt;
-  while ((opt = getopt(argc, argv, "ledv:") != -1)) {
+  while ((opt = getopt(argc, argv, "ledv")) != -1) {
     switch (opt) {
     case 'l':
+      break;
+    case 'e':
+      printf("Enabling firewall...\n");
       enable_firewall();
-      return 0;
+      break;
+    case 'd':
+    case 'v':
+      break;
+    case '?':
     default:
       print_help();
     }
