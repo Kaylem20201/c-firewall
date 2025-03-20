@@ -8,6 +8,7 @@
 
 // TODO: work with env variables instead
 #define RULES_FILEPATH "/etc/custom_firewall/current.rules"
+#define DISABLED_RULES_FILEPATH "/etc/custom_firewall/accept-all.rules"
 
 void print_help() {
   int long_flag_width = 16;
@@ -26,20 +27,31 @@ void print_help() {
          "Display version information");
 }
 
-void enable_firewall() {
+void load_firewall_rules(char* filepath) {
   char command[64] = "iptables-restore ";
-  strcat(command, RULES_FILEPATH);
+  strcat(command, filepath);
   int res = system(command);
   switch (res) {
   case -1:
     printf("Error -1: Child process error\n");
+    break;
   case 127:
     printf("Error 127: Could not execute shell in child process\n");
+    break;
   case 0:
-    return;
+    break;
   default:
     printf("Returned %d\n", res);
   }
+  exit(res);
+}
+
+void enable_firewall() {
+  load_firewall_rules(RULES_FILEPATH);
+}
+
+void disable_firewall() {
+  load_firewall_rules(DISABLED_RULES_FILEPATH);
 }
 
 int main(int argc, char **argv) {
@@ -54,6 +66,9 @@ int main(int argc, char **argv) {
       enable_firewall();
       break;
     case 'd':
+      printf("Disabling firewall...\n");
+      disable_firewall();
+      break;
     case 'v':
       break;
     case '?':
