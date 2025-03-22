@@ -33,6 +33,18 @@ void print_help() {
          "Display version information");
 }
 
+void log_to_file(const char *fmt, ...) {
+  va_list args;
+  FILE *file;
+
+  file = fopen(LOGGING_FILEPATH, "a");
+  va_start(args, fmt);
+  lab_logf(file, fmt, args);
+  va_end(args);
+  fclose(file);
+}
+
+
 void load_firewall_rules(char *filepath) {
   char command[64] = "iptables-restore ";
   strcat(command, filepath);
@@ -49,7 +61,11 @@ void load_firewall_rules(char *filepath) {
   default:
     printf("Returned %d\n", res);
   }
-  exit(res);
+  if (res != 0) {
+    log_to_file("Error when loading firewall rules: %d", res);
+    exit(res);
+  }
+  log_to_file("Loaded firewall rules from %s", filepath);
 }
 
 void enable_firewall() { load_firewall_rules(RULES_FILEPATH); }
@@ -62,17 +78,6 @@ void print_version() {
   strcat(version_str, " ");
   strcat(version_str, VERSION);
   printf("%s\n", version_str);
-}
-
-void log_to_file(char **message, const char *fmt, ...) {
-  va_list args;
-  FILE *file;
-
-  file = fopen(LOGGING_FILEPATH, "a");
-  va_start(args, fmt);
-  lab_logf(file, fmt, args);
-  va_end(args);
-  fclose(file);
 }
 
 void print_logs() {
