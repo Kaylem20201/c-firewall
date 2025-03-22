@@ -1,6 +1,8 @@
 // firewall.c
 // Main process
 
+#include "lib/logging.h"
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +14,7 @@
 // TODO: work with env variables instead
 #define RULES_FILEPATH "/etc/custom_firewall/current.rules"
 #define DISABLED_RULES_FILEPATH "/etc/custom_firewall/accept-all.rules"
+#define LOGGING_FILEPATH "/var/log/custom_firewall.log"
 
 void print_help() {
   int long_flag_width = 16;
@@ -61,12 +64,37 @@ void print_version() {
   printf("%s\n", version_str);
 }
 
+void log_to_file(char **message, const char *fmt, ...) {
+  va_list args;
+  FILE *file;
+
+  file = fopen(LOGGING_FILEPATH, "a");
+  va_start(args, fmt);
+  lab_logf(file, fmt, args);
+  va_end(args);
+  fclose(file);
+}
+
+void print_logs() {
+  FILE *file;
+  char s;
+
+  file = fopen(LOGGING_FILEPATH, "r");
+  while ((s = fgetc(file)) != EOF) {
+    printf("%c", s);
+  }
+  fclose(file);
+
+  printf("\n");
+}
+
 int main(int argc, char **argv) {
 
   int opt;
   while ((opt = getopt(argc, argv, "ledv")) != -1) {
     switch (opt) {
     case 'l':
+      print_logs();
       break;
     case 'e':
       printf("Enabling firewall...\n");
